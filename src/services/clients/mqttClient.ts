@@ -1,5 +1,5 @@
 import { connect, IClientOptions, MqttClient } from 'mqtt'
-import { MQTT_PORT, MQTT_URL } from '../../config'
+import { MQTT_PORT, MQTT_URL, OPENF1_USERNAME } from '../../config'
 import { RestClient } from './restClient'
 import { inject, injectable } from 'inversify'
 import { TokenResponse } from '../../interfaces/tokenResponse'
@@ -8,15 +8,16 @@ import { TYPES } from '../../types'
 import { exit } from 'process'
 import { DiscordClient } from './discordClient'
 import { BaseMessage } from '../../interfaces/baseMessage'
+import { Topic } from '../../enums'
+import { sleep } from '../../util'
 
 @injectable()
 export class F1MqttClient {
   private client: MqttClient
-
-  private readonly TOPICS: string[] = [
-    'v1/race_control',
-    'v1/sessions'
-  ]
+  private MQTT_OPTIONS: IClientOptions = {
+    username: OPENF1_USERNAME,
+    port: MQTT_PORT
+  }
 
   constructor(
     @inject(TYPES.DiscordClient) private discordClient: DiscordClient,
@@ -24,47 +25,34 @@ export class F1MqttClient {
     @inject(TYPES.Logger) private logger: Logger
   ) {
     this.logger.info('Initializing MQTT client...')
-    this.restClient.authenticate().then(async (tokenResponse) => {
-      const options: IClientOptions = {
-        password: tokenResponse.access_token,
-        port: MQTT_PORT
-      }
+    this.restClient.authenticate().then(async (tokenResponse: TokenResponse) => {
+      this.MQTT_OPTIONS.password = tokenResponse.access_token
 
-      this.client = connect(MQTT_URL, options)
+      this.client = connect(MQTT_URL, this.MQTT_OPTIONS)
 
-      this.client.on('connect', () => {
-        this.logger.info('Connected to MQTT broker.')
-      })
-
-      this.client.on('message', (topic: string, message: Buffer) => {
-        const parsedMessage: BaseMessage = JSON.parse(message.toString())
-        this.logger.info(`Received message on topic ${topic}:`)
-        this.logger.info(parsedMessage)
-        this.discordClient.sendMessage(parsedMessage)
-      })
+      this.setListeners()
     })
 
-    // Refreshing 100 seconds before token expiry
+    // Refreshing 100 seconds before token expiry, 3500000 ms
     setInterval(() => this.refreshClient(), 3500000)
   }
 
   public async start(): Promise<void> {
     while (!this.client || !this.client.connected) {
       this.logger.info('Waiting for MQTT client to connect...')
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await sleep()
     }
 
-    for (const topic of this.TOPICS) {
+    for (const topic of Object.values(Topic)) {
       this.client.subscribe(topic, this.subscribeHandler.bind(this, topic))
     }
   }
 
-  private subscribeHandler(topic: string, err?: Error): void {
-    if (err) {
-      this.logger.error(`Failed to subscribe to topic ${topic}: `)
-      this.logger.error(err)
+  private subscribeHandler(topic: string, error?: Error): void {
+    if (error) {
+      this.logger.error(error, `Failed to subscribe to topic ${topic}.`)
     } else {
-      this.logger.info(`Subscribed to topic ${topic}`)
+      this.logger.info(`Subscribed to topic ${topic}.`)
     }
   }
 
@@ -73,16 +61,14 @@ export class F1MqttClient {
     let tokenResponse: TokenResponse
 
     try {
-      this.logger.info('Authenticating /token...')
       tokenResponse = await this.restClient.authenticate()
     } catch (error) {
-      this.logger.error('Failed to authenticate: ')
-      this.logger.error(error)
+      this.logger.error(error, 'Failed to authenticate.')
       retries += 1
 
       if (retries <= 3) {
         this.logger.error(`Retrying... (${retries}/3)`)
-        this.refreshClient(retries)
+        await this.refreshClient(retries)
       }
 
       this.logger.fatal('Max retries reached. Exiting.')
@@ -91,23 +77,33 @@ export class F1MqttClient {
 
     this.logger.info('Authenticated successfully.')
 
-    const options: IClientOptions = {
-      password: tokenResponse.access_token,
-      port: 8883
-    }
+    this.MQTT_OPTIONS.password = tokenResponse.access_token
 
+    this.setListeners()
     try {
       this.logger.info('Reconnecting to MQTT broker...')
-      this.client = connect(MQTT_URL, options)
-      this.client.on('connect', async () => {
-        this.logger.info('Reconnected.')
-        await this.start()
-      })
+      this.client.reconnect(this.MQTT_OPTIONS)
     } catch (error) {
-      this.logger.fatal('Failed to reconnect to MQTT broker:')
-      this.logger.fatal(error)
+      this.logger.fatal(error, 'Failed to reconnect to MQTT broker.')
       this.logger.fatal('Exiting.')
       exit(1)
     }
+  }
+
+  private setListeners(): void {
+    this.client.on('connect', () => {
+      this.logger.info('Connected to MQTT broker.')
+    })
+
+    this.client.on('message', async (topic: Topic, message: Buffer) => {
+      const parsedMessage: BaseMessage = JSON.parse(message.toString())
+      this.logger.info(`Received message on topic ${topic}.`)
+      this.logger.debug(parsedMessage)
+      await this.discordClient.sendMessage(parsedMessage, topic)
+    })
+
+    this.client.on('error', (error: Error) => {
+      this.logger.error(error, 'MQTT client error.')
+    })
   }
 }

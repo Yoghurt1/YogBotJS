@@ -1,9 +1,14 @@
 import { RaceControlCategory, Scope, Flag } from '../enums'
 import { BaseMessage } from './baseMessage'
+import { EnrichedMessage } from './enrichedMessage'
 
-export interface RestRaceControl {
+export interface RaceControl {
   category: RaceControlCategory,
-  date: Date,
+  /** 
+   * ISO date string 
+   * @example '2025-08-03T14:41:45+00:00'
+   */
+  date: string,
   /** Driver number as printed on the car. */
   driver_number?: number,
   flag?: Flag,
@@ -15,4 +20,7 @@ export interface RestRaceControl {
   session_key: number
 }
 
-export interface MqttRaceControl extends BaseMessage {}
+
+export interface RaceControlMessage extends RaceControl, BaseMessage {}
+
+export interface EnrichedRaceControlMessage extends RaceControlMessage, EnrichedMessage {}

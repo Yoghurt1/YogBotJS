@@ -4,5 +4,6 @@ module.exports = {
   OPENF1_PASSWORD: process.env.OPENF1_PASSWORD,
   MQTT_URL: process.env.MQTT_URL || 'mqtts://mqtt.openf1.org',
   MQTT_PORT: Number(process.env.MQTT_PORT) || 8883,
-  CHANNEL_ID: process.env.CHANNEL_ID || '1400859518253924392',
+  CHANNEL_ID: process.env.CHANNEL_ID || '1153073648236761128',
+  DELAY: Number(process.env.DELAY) || 5000,
 }
