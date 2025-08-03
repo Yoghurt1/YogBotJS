@@ -5,5 +5,9 @@ export const TYPES = {
   // Clients
   DiscordClient: 'DiscordClient',
   F1MqttClient: 'F1MqttClient',
-  RestClient: 'RestClient'
+  RestClient: 'RestClient',
+
+  // Services
+  MessageEnricher: 'MessageEnricher',
+  MessageMapper: 'MessageMapper'
 }

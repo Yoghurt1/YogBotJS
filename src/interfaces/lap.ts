@@ -1,8 +1,12 @@
 import { Segment } from '../enums'
 import { BaseMessage } from './baseMessage'
 
-export interface RestLaps {
-  date_start: Date,
+export interface Laps {
+  /** 
+   * ISO date string 
+   * @example '2025-08-03T14:41:45+00:00'
+   */
+  date_start: string,
   /** Driver number as printed on the car. */
   driver_number: number,
   /** Floating point number */
@@ -38,4 +42,4 @@ export interface RestLaps {
   st_speed: number
 }
 
-export interface MqttLaps extends BaseMessage {}
+export interface MqttLaps extends Laps, BaseMessage {}

@@ -1,7 +1,7 @@
 import { OPENF1_PASSWORD, OPENF1_USERNAME } from './config'
-import { TokenRequest } from './interfaces/tokenRequest'
+import { URLSearchParams } from 'url'
 
-export const TOKEN_REQUEST: TokenRequest = {
+export const TOKEN_REQUEST: URLSearchParams = new URLSearchParams({
   username: OPENF1_USERNAME,
   password: OPENF1_PASSWORD
-}
+})

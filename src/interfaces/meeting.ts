@@ -1,0 +1,22 @@
+import { BaseMessage } from './baseMessage';
+
+export interface Meeting {
+  circuit_key: number,
+  circuit_short_name: string,
+  country_code: string,
+  country_key: number,
+  country_name: string,
+  date_start: Date,
+  gmt_offset: string,
+  location: string,
+  meeting_key: number,
+  /** e.g. Singapore Grand Prix */
+  meeting_name: string,
+  /** e.g. FORMULA 1 SINGAPORE AIRLINES SINGAPORE GRAND PRIX 2023 */
+  meeting_official_name: string,
+  year: number
+}
+
+export interface MeetingRequest extends Partial<Meeting> {}
+
+export interface MeetingMessage extends Meeting, BaseMessage {}

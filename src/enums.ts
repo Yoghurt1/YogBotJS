@@ -10,27 +10,56 @@ export enum Segment {
 }
 
 export enum RaceControlCategory {
-  FLAG = "Flag",
-  CAR_EVENT = "CarEvent",
-  DRS = "Drs",
-  SAFETY_CAR = "SafetyCar"
+  FLAG = 'Flag',
+  CAR_EVENT = 'CarEvent',
+  DRS = 'Drs',
+  SAFETY_CAR = 'SafetyCar'
 }
 
 export enum Flag {
-  GREEN = "GREEN",
-  YELLOW = "YELLOW",
-  DOUBLE_YELLOW = "DOUBLE YELLOW",
-  RED = "RED",
-  BLACK = "BLACK",
-  WHITE = "WHITE",
-  BLACK_AND_WHITE = "BLACK AND WHITE",
-  BLUE = "BLUE",
-  CHEQUERED = "CHEQUERED",
-  CLEAR = "CLEAR"
+  GREEN = 'GREEN',
+  YELLOW = 'YELLOW',
+  DOUBLE_YELLOW = 'DOUBLE YELLOW',
+  RED = 'RED',
+  BLACK = 'BLACK',
+  WHITE = 'WHITE',
+  BLACK_AND_WHITE = 'BLACK AND WHITE',
+  BLUE = 'BLUE',
+  CHEQUERED = 'CHEQUERED',
+  CLEAR = 'CLEAR'
 }
 
 export enum Scope {
-  TRACK = "Track",
-  DRIVER = "Driver",
-  SECTOR = "Sector"
+  TRACK = 'Track',
+  DRIVER = 'Driver',
+  SECTOR = 'Sector'
+}
+
+export enum Topic {
+  RaceControl = 'v1/race_control',
+  Sessions = 'v1/sessions',
+  Meetings = 'v1/meetings'
+}
+
+export enum Emote {
+  GREEN = '<:greenflag:759534303821692988>',
+  CLEAR = '<:greenflag:759534303821692988>',
+  YELLOW = '<:yellowflag:759534303817236550>',
+  DOUBLE_YELLOW = '<:yellowflag:759534303817236550>',
+  BLACK_AND_WHITE = '<:blackwhiteflag:759447554047475723>',
+  BLACK = '<:blackflag:759534303595331615>',
+  SAFETY_CAR = '<:safetycar:757207851893522472>',
+  FCY = '<:fcy:759432420092805170>',
+  RETIRED = '<:F_:592914927396585472>',
+  RED = '<:redflag:759534303842402314>',
+  OFF_TRACK = '<:offtrack:769633560327880706>',
+  BLACK_AND_ORANGE = '<:meatball:759447536376873000>',
+  BLUE = '<:blueflag:759534303788400670>',
+  CHEQUERED = '🏁',
+  INVESTIGATION = '🔍',
+  NOTED = '🗒️',
+  NO_FURTHER_ACTION = '✅',
+  PB = '🟩',
+  SB = '🟪',
+  DRIVER_CHANGE = '🔄'
 }
