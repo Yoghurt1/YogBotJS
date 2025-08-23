@@ -2,6 +2,8 @@
 
 A Discord bot that uses data from [OpenF1](https://openf1.org) to post live timing and race control messages.
 
+If you have suggestions for new functionality, [feel free to leave them as an idea.](https://github.com/Yoghurt1/YogBotJS/discussions/new?category=ideas)
+
 ## Copyright
 
 YogBotJS (c) 2025 by Eoin McCoy
