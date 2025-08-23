@@ -1,4 +1,4 @@
-import { RaceControlCategory, Scope, Flag } from '../enums'
+import { RaceControlCategory, Scope, Flag } from '../../enums'
 import { BaseMessage } from './baseMessage'
 import { EnrichedMessage } from './enrichedMessage'
 

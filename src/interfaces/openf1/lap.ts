@@ -1,4 +1,4 @@
-import { Segment } from '../enums'
+import { Segment } from '../../enums'
 import { BaseMessage } from './baseMessage'
 
 export interface Laps {
