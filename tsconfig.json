@@ -12,7 +12,8 @@
     "types": [],
     "allowJs": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "typeRoots": ["src/@types", "node_modules/@types"],
   },
   "include": [
     "./src/**/*.ts", "src/index.tsx",

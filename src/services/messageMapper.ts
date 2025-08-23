@@ -3,10 +3,11 @@ import { TYPES } from '../types'
 import { Logger } from 'pino'
 import { MessageEnricher } from './messageEnricher'
 import { Emote, Flag, RaceControlCategory, Topic } from '../enums'
-import { EnrichedRaceControlMessage, RaceControlMessage } from '../interfaces/raceControl'
-import { BaseMessage } from '../interfaces/baseMessage'
+import { EnrichedRaceControlMessage, RaceControlMessage } from '../interfaces/openf1/raceControl'
+import { BaseMessage } from '../interfaces/openf1/baseMessage'
 import { APIEmbed, codeBlock, EmbedBuilder } from 'discord.js'
 import { DateTime } from 'luxon'
+import { DEFAULT_EMBED } from '../constants'
 
 @injectable()
 export class MessageMapper {
@@ -21,8 +22,7 @@ export class MessageMapper {
       const enrichedMessage: EnrichedRaceControlMessage = await this.messageEnricher.enrichMessage(message)
 
       this.logger.info('Mapping enriched message to Discord embed...')
-      return new EmbedBuilder()
-        .setColor(0xFF1801)
+      return EmbedBuilder.from(DEFAULT_EMBED)
         .setTitle(`${enrichedMessage.meeting.meeting_official_name} - ${enrichedMessage.session.session_name}`)
         .setDescription(`${this.getEmote(enrichedMessage)} ${enrichedMessage.message}`)
         .setFooter({ text: this.getFooter(enrichedMessage) })

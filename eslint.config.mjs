@@ -65,9 +65,7 @@ export default [{
     "@typescript-eslint/await-thenable": "error",
     "@typescript-eslint/no-floating-promises": "error",
     "@typescript-eslint/no-misused-promises": ["error", {
-      checksVoidReturn: {
-        arguments: false
-      }
+      checksVoidReturn: false
     }],
 
     "@typescript-eslint/consistent-type-assertions": "off",

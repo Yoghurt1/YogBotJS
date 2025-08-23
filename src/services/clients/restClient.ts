@@ -1,10 +1,10 @@
 import { AxiosError, AxiosInstance, AxiosPromise, AxiosRequestConfig, AxiosResponse, create, isAxiosError } from 'axios'
-import { Session, SessionRequest } from '../../interfaces/session'
-import { TokenResponse } from '../../interfaces/tokenResponse'
+import { Session, SessionRequest } from '../../interfaces/openf1/session'
+import { TokenResponse } from '../../interfaces/openf1/tokenResponse'
 import { TOKEN_REQUEST } from '../../constants'
 import { inject, injectable } from 'inversify'
 import { Logger } from 'pino'
-import { Meeting, MeetingRequest } from '../../interfaces/meeting'
+import { Meeting, MeetingRequest } from '../../interfaces/openf1/meeting'
 import { Topic } from '../../enums'
 import { StatusCodes } from 'http-status-codes'
 
