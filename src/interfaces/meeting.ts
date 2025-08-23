@@ -6,6 +6,11 @@ export interface Meeting {
   country_code: string
   country_key: number
   country_name: string
+  /**
+   * ISO date string
+   *
+   * @example '2025-08-03T14:41:45+00:00'
+   */
   date_start: Date
   gmt_offset: string
   location: string

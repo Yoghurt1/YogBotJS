@@ -5,7 +5,7 @@ import { MessageEnricher } from './messageEnricher'
 import { Emote, Flag, RaceControlCategory, Topic } from '../enums'
 import { EnrichedRaceControlMessage, RaceControlMessage } from '../interfaces/raceControl'
 import { BaseMessage } from '../interfaces/baseMessage'
-import { EmbedBuilder } from 'discord.js'
+import { APIEmbed, codeBlock, EmbedBuilder } from 'discord.js'
 import { DateTime } from 'luxon'
 
 @injectable()
@@ -27,6 +27,17 @@ export class MessageMapper {
         .setDescription(`${this.getEmote(enrichedMessage)} ${enrichedMessage.message}`)
         .setFooter({ text: this.getFooter(enrichedMessage) })
     }
+  }
+
+  public mapErrorMessage(error: Error): APIEmbed {
+    const builder: EmbedBuilder =
+      new EmbedBuilder()
+        .setColor(0xFF1801)
+        .setTitle(`Fatal error - ${error.name}`)
+        .setDescription(`${error.message}\n${codeBlock(error.stack)}`)
+        .setFooter({ text: DateTime.now().toRFC2822() })
+
+    return builder.data
   }
 
   private getEmote(message: EnrichedRaceControlMessage): string {

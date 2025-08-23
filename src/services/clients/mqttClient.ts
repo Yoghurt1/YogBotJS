@@ -83,8 +83,7 @@ export class F1MqttClient {
       this.client.reconnect(this.MQTT_OPTIONS)
     } catch (error) {
       this.logger.fatal(error, 'Failed to reconnect to MQTT broker.')
-      this.logger.fatal('Exiting.')
-      exit(1)
+      throw error
     }
   }
 
