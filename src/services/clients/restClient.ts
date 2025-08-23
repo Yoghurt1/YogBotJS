@@ -21,7 +21,8 @@ export class RestClient {
     const requestConfig: AxiosRequestConfig = {
       baseURL: 'https://api.openf1.org',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        'Content-Type': 'application/x-www-form-urlencoded'
       }
     }
 
@@ -43,13 +44,21 @@ export class RestClient {
   }
 
   public async getSessions(params?: SessionRequest): Promise<Session[]> {
-    params ? params.year = params.year || new Date().getFullYear() : params = { year: new Date().getFullYear() }
+    if (params) {
+      params.year = params.year || new Date().getFullYear()
+    } else {
+      params = { year: new Date().getFullYear() }
+    }
 
     return this.httpHandler(() => this.axios.get<Session[]>(Topic.Sessions, { params }))
   }
 
   public async getMeetings(params?: MeetingRequest): Promise<Meeting[]> {
-    params ? params.year = params.year || new Date().getFullYear() : params = { year: new Date().getFullYear() }
+    if (params) {
+      params.year = params.year || new Date().getFullYear()
+    } else {
+      params = { year: new Date().getFullYear() }
+    }
 
     return this.httpHandler(() => this.axios.get<Meeting[]>(Topic.Meetings, { params }))
   }
@@ -77,7 +86,7 @@ export class RestClient {
   }
 
   private handleError(error: AxiosError) {
-    this.logger.error(error, 'Axios request failed.') 
+    this.logger.error(error, 'Axios request failed.')
     return Promise.reject(error)
   }
 }

@@ -17,7 +17,7 @@ export class MessageEnricher {
     @inject(TYPES.Logger) private logger: Logger,
     @inject(TYPES.RestClient) private restClient: RestClient
   ) {
-    this.waitForClient().then(async () => {
+    void this.waitForClient().then(async () => {
       await this.getMeetingData()
       await this.getSessionData()
     })
@@ -27,8 +27,8 @@ export class MessageEnricher {
     const sessions: Session[] = await this.getSessionData({ session_key: message.session_key })
     const meetings: Meeting[] = await this.getMeetingData({ meeting_key: message.meeting_key })
 
-    return { 
-      ...message, 
+    return {
+      ...message,
       session: sessions[0],
       meeting: meetings[0]
     }

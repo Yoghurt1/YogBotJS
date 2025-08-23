@@ -25,7 +25,7 @@ export class F1MqttClient {
     @inject(TYPES.Logger) private logger: Logger
   ) {
     this.logger.info('Initializing MQTT client...')
-    this.restClient.authenticate().then(async (tokenResponse: TokenResponse) => {
+    void this.restClient.authenticate().then((tokenResponse: TokenResponse) => {
       this.MQTT_OPTIONS.password = tokenResponse.access_token
 
       this.client = connect(MQTT_URL, this.MQTT_OPTIONS)
