@@ -3,7 +3,6 @@ import { inject, injectable } from 'inversify'
 import { TYPES } from '../../types'
 import { Logger } from 'pino'
 import { CHANNEL_ID, DELAY, DISCORD_TOKEN } from '../../config'
-import { exit } from 'process'
 import { BaseMessage } from '../../interfaces/baseMessage'
 import { MessageMapper } from '../messageMapper'
 import { Topic } from '../../enums'
@@ -36,8 +35,7 @@ export class DiscordClient {
       })
     } catch (error) {
       this.logger.fatal(error, 'Login failed.')
-      this.logger.fatal('Exiting.')
-      exit(1)
+      throw error
     }
   }
 
