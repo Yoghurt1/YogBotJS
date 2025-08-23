@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "npx eslint ./src",
+    "lint-fix": "npx eslint ./src --fix",
     "build": "npm run clean && tsc",
     "clean": "rimraf ./dist",
     "start": "node dist/index.js",
@@ -35,11 +36,15 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
+    "@stylistic/eslint-plugin": "^5.2.3",
     "@types/luxon": "^3.7.1",
     "@types/pino": "^7.0.4",
     "eslint": "^9.32.0",
+    "eslint-plugin-jsdoc": "^54.1.1",
+    "eslint-plugin-no-only-tests": "^3.3.0",
     "nodemon": "^3.1.10",
     "rimraf": "^6.0.1",
+    "stylistic": "^0.2.4",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.38.0"
   }

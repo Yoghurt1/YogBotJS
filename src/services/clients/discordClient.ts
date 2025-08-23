@@ -61,7 +61,7 @@ export class DiscordClient {
 
       await channel.send({ embeds: [formattedMessage] })
     } else {
-      this.logger.error(message, 'Channel is not sendable. Cannot send message.') 
+      this.logger.error(message, 'Channel is not sendable. Cannot send message.')
     }
   }
 }

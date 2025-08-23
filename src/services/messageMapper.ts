@@ -64,7 +64,7 @@ export class MessageMapper {
   private getFooter(message: EnrichedRaceControlMessage): string {
     const offset: number = parseInt(message.meeting.gmt_offset.split(':')[0], 10)
     const msgDate: DateTime = DateTime.fromISO(message.date, { setZone: true }).plus({ hours: offset })
-    let footer: string = `${msgDate.toFormat('HH:mm:ss')}`
+    let footer = `${msgDate.toFormat('HH:mm:ss')}`
 
     if (message.lap_number) {
       footer = footer + ` - Lap ${message.lap_number}`

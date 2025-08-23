@@ -1,4 +1,4 @@
-export type ExpiresIn = "3600"
+export type ExpiresIn = '3600'
 export type TokenType = 'Bearer'
 
 export interface TokenResponse {
