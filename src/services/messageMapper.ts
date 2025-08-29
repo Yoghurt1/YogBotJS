@@ -69,6 +69,10 @@ export class MessageMapper {
       return Emote.OFF_TRACK
     }
 
+    if (message.message.includes('DOUBLE YELLOW')) {
+      return Emote.DOUBLE_YELLOW
+    }
+
     return ''
   }
 

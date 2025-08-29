@@ -45,7 +45,7 @@ export enum Emote {
   GREEN = '<:greenflag:759534303821692988>',
   CLEAR = '<:greenflag:759534303821692988>',
   YELLOW = '<:yellowflag:759534303817236550>',
-  DOUBLE_YELLOW = '<:yellowflag:759534303817236550>',
+  DOUBLE_YELLOW = '<:yellowflag:759534303817236550><:yellowflag:759534303817236550>',
   BLACK_AND_WHITE = '<:blackwhiteflag:759447554047475723>',
   BLACK = '<:blackflag:759534303595331615>',
   SAFETY_CAR = '<:safetycar:757207851893522472>',
