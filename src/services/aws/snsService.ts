@@ -1,8 +1,8 @@
 import { inject, injectable } from 'inversify'
-import { TYPES } from '../types'
+import { TYPES } from '../../types'
 import { PublishCommand, PublishCommandInput, PublishCommandOutput, ServiceInputTypes, ServiceOutputTypes, SNSClient } from '@aws-sdk/client-sns'
-import { ERROR_TOPIC_ARN } from '../config'
-import { MessageMapper } from './messageMapper'
+import { ERROR_TOPIC_ARN } from '../../config'
+import { MessageMapper } from '../message/messageMapper'
 import { Logger } from 'pino'
 import { Command } from 'smithy'
 

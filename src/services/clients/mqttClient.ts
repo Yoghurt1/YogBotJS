@@ -6,10 +6,10 @@ import { TokenResponse } from '../../interfaces/openf1/tokenResponse'
 import { Logger } from 'pino'
 import { TYPES } from '../../types'
 import { exit } from 'process'
-import { DiscordClient } from './discordClient'
 import { BaseMessage } from '../../interfaces/openf1/baseMessage'
 import { Topic } from '../../enums'
 import { sleep } from '../../util'
+import { MessageService } from '../message/messageService'
 
 @injectable()
 export class F1MqttClient {
@@ -20,9 +20,9 @@ export class F1MqttClient {
   }
 
   constructor(
-    @inject(TYPES.DiscordClient) private discordClient: DiscordClient,
     @inject(TYPES.RestClient) private restClient: RestClient,
-    @inject(TYPES.Logger) private logger: Logger
+    @inject(TYPES.Logger) private logger: Logger,
+    @inject(TYPES.MessageService) private messageService: MessageService
   ) {
     this.logger.info('Initializing MQTT client...')
     void this.restClient.authenticate().then((tokenResponse: TokenResponse) => {
@@ -96,7 +96,7 @@ export class F1MqttClient {
       const parsedMessage: BaseMessage = JSON.parse(message.toString())
       this.logger.info(`Received message on topic ${topic}.`)
       this.logger.debug(parsedMessage)
-      await this.discordClient.sendMessage(parsedMessage, topic)
+      await this.messageService.sendMessage(parsedMessage, topic)
     })
 
     this.client.on('error', (error: Error) => {
