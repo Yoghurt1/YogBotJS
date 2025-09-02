@@ -1,12 +1,12 @@
 import { inject, injectable } from 'inversify'
 import { Logger } from 'pino'
-import { TYPES } from '../types'
-import { RestClient } from './clients/restClient'
-import { Session, SessionRequest } from '../interfaces/openf1/session'
-import { EnrichedRaceControlMessage, RaceControlMessage } from '../interfaces/openf1/raceControl'
-import { Meeting, MeetingRequest } from '../interfaces/openf1/meeting'
-import { sleep } from '../util'
-import { Topic } from '../enums'
+import { TYPES } from '../../types'
+import { RestClient } from '../clients/restClient'
+import { Session, SessionRequest } from '../../interfaces/openf1/session'
+import { EnrichedRaceControlMessage, RaceControlMessage } from '../../interfaces/openf1/raceControl'
+import { Meeting, MeetingRequest } from '../../interfaces/openf1/meeting'
+import { sleep } from '../../util'
+import { Topic } from '../../enums'
 
 @injectable()
 export class MessageEnricher {
@@ -23,7 +23,7 @@ export class MessageEnricher {
     })
   }
 
-  public async enrichMessage(message: RaceControlMessage): Promise<EnrichedRaceControlMessage> {
+  public async enrichRaceControlMessage(message: RaceControlMessage): Promise<EnrichedRaceControlMessage> {
     const sessions: Session[] = await this.getSessionData({ session_key: message.session_key })
     const meetings: Meeting[] = await this.getMeetingData({ meeting_key: message.meeting_key })
 
@@ -63,7 +63,8 @@ export class MessageEnricher {
       this.logger.debug(request, 'Request')
       this.logger.debug(responseData, 'Response')
 
-      cachedData = responseData
+      cachedData.splice(0)
+      cachedData.push(...responseData)
 
       return responseData
     } catch (error) {

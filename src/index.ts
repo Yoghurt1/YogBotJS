@@ -4,7 +4,7 @@ import { F1MqttClient } from './services/clients/mqttClient'
 import { TYPES } from './types'
 import { exit } from 'process'
 import { DiscordClient } from './services/clients/discordClient'
-import { SnsService } from './services/snsService'
+import { SnsService } from './services/aws/snsService'
 
 const logger: Logger = iocContainer.get(TYPES.Logger)
 const sns: SnsService = iocContainer.get(TYPES.SnsService)

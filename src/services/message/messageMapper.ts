@@ -1,32 +1,24 @@
 import { inject, injectable } from 'inversify'
-import { TYPES } from '../types'
+import { TYPES } from '../../types'
 import { Logger } from 'pino'
-import { MessageEnricher } from './messageEnricher'
-import { Emote, Flag, RaceControlCategory, Topic } from '../enums'
-import { EnrichedRaceControlMessage, RaceControlMessage } from '../interfaces/openf1/raceControl'
-import { BaseMessage } from '../interfaces/openf1/baseMessage'
+import { Emote, Flag, RaceControlCategory } from '../../enums'
+import { EnrichedRaceControlMessage } from '../../interfaces/openf1/raceControl'
 import { APIEmbed, codeBlock, EmbedBuilder } from 'discord.js'
 import { DateTime } from 'luxon'
-import { DEFAULT_EMBED } from '../constants'
+import { DEFAULT_EMBED } from '../../constants'
 
 @injectable()
 export class MessageMapper {
   constructor(
-    @inject(TYPES.Logger) private logger: Logger,
-    @inject(TYPES.MessageEnricher) private messageEnricher: MessageEnricher
+    @inject(TYPES.Logger) private logger: Logger
   ) {}
 
-  public async mapRaceControlMessage(message: BaseMessage, topic: Topic): Promise<EmbedBuilder> {
-    if (this.isRaceControlMessage(message, topic)) {
-      this.logger.info('Enriching message...')
-      const enrichedMessage: EnrichedRaceControlMessage = await this.messageEnricher.enrichMessage(message)
-
-      this.logger.info('Mapping enriched message to Discord embed...')
-      return EmbedBuilder.from(DEFAULT_EMBED)
-        .setTitle(`${enrichedMessage.meeting.meeting_official_name} - ${enrichedMessage.session.session_name}`)
-        .setDescription(`${this.getEmote(enrichedMessage)} ${enrichedMessage.message}`)
-        .setFooter({ text: this.getFooter(enrichedMessage) })
-    }
+  public mapRaceControlMessage(message: EnrichedRaceControlMessage): EmbedBuilder {
+    this.logger.info('Mapping enriched message to Discord embed...')
+    return EmbedBuilder.from(DEFAULT_EMBED)
+      .setTitle(`${message.meeting.meeting_official_name} - ${message.session.session_name}`)
+      .setDescription(`${this.getEmote(message)} ${message.message}`)
+      .setFooter({ text: this.getFooter(message) })
   }
 
   public mapErrorMessage(error: Error): APIEmbed {
@@ -86,9 +78,5 @@ export class MessageMapper {
     }
 
     return footer
-  }
-
-  private isRaceControlMessage(message: BaseMessage, topic: Topic): message is RaceControlMessage {
-    return topic === Topic.RaceControl
   }
 }

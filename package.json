@@ -2,7 +2,7 @@
   "name": "yogbotjs",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.ts",
   "scripts": {
     "lint": "npx eslint ./src",
     "lint-fix": "npx eslint ./src --fix",
@@ -10,6 +10,7 @@
     "clean": "rimraf ./dist",
     "start": "node dist/index.js",
     "start:dev": "tsc && node dist/index.js",
+    "start:prod": "npm run build && npm run start",
     "dev": "nodemon -e ts  --exec \"npm run start:dev\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -18,7 +19,7 @@
     "url": "git+https://github.com/Yoghurt1/YogBotJS.git"
   },
   "author": "",
-  "license": "MIT",
+  "license": "CC BY-NC 4.0",
   "bugs": {
     "url": "https://github.com/Yoghurt1/YogBotJS/issues"
   },

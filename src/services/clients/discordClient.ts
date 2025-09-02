@@ -1,13 +1,10 @@
 import * as path from 'path'
 import * as fs from 'fs'
-import { BaseInteraction, Channel, Client, Collection, Events, GatewayIntentBits, MessageFlags, REST, Routes } from 'discord.js'
+import { BaseInteraction, Channel, Client, Collection, EmbedBuilder, Events, GatewayIntentBits, MessageFlags, REST, Routes } from 'discord.js'
 import { inject, injectable } from 'inversify'
 import { TYPES } from '../../types'
 import { Logger } from 'pino'
 import { CHANNEL_ID, CLIENT_ID, DELAY, DISCORD_TOKEN, GUILD_ID } from '../../config'
-import { BaseMessage } from '../../interfaces/openf1/baseMessage'
-import { MessageMapper } from '../messageMapper'
-import { Topic } from '../../enums'
 import { sleep } from '../../util'
 import { SlashCommand } from '../../interfaces/slashCommand'
 
@@ -16,8 +13,7 @@ export class DiscordClient {
   private client: Client
 
   constructor(
-    @inject(TYPES.Logger) private logger: Logger,
-    @inject(TYPES.MessageMapper) private messageMapper: MessageMapper
+    @inject(TYPES.Logger) private logger: Logger
   ) {
     this.client = new Client({
       intents: [
@@ -46,25 +42,19 @@ export class DiscordClient {
     }
   }
 
-  public async sendMessage(message: BaseMessage, topic: Topic): Promise<void> {
-    if (topic !== Topic.RaceControl) {
-      this.logger.warn(`Ignoring message on topic ${topic}.`)
-      return
-    }
+  public isReady(): boolean {
+    return this.client.isReady()
+  }
 
-    if (!this.client.isReady()) {
-      this.logger.error(message, 'Discord client is not ready. Cannot send message.')
-      return
-    }
-
-    const formattedMessage = await this.messageMapper.mapRaceControlMessage(message, topic)
+  public async sendMessage(message: EmbedBuilder): Promise<void> {
     const channel: Channel = this.client.channels.cache.get(CHANNEL_ID)
+
     if (channel.isSendable()) {
       await sleep(DELAY)
 
       this.logger.info('Sending message.')
 
-      await channel.send({ embeds: [formattedMessage] })
+      await channel.send({ embeds: [message] })
     } else {
       this.logger.error(message, 'Channel is not sendable. Cannot send message.')
     }
@@ -140,6 +130,6 @@ export class DiscordClient {
       this.logger.error(error, 'Error occurred when refreshing slash commands.')
     }
 
-    this.logger.info('Done.')
+    this.logger.info('Commands registered.')
   }
 }

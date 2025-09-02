@@ -11,5 +11,6 @@ export const TYPES = {
 
   // Services
   MessageEnricher: 'MessageEnricher',
-  MessageMapper: 'MessageMapper'
+  MessageMapper: 'MessageMapper',
+  MessageService: 'MessageService'
 }
