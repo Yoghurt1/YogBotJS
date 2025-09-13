@@ -26,7 +26,7 @@
   "homepage": "https://github.com/Yoghurt1/YogBotJS#readme",
   "dependencies": {
     "@aws-sdk/client-sns": "^3.864.0",
-    "axios": "^1.11.0",
+    "axios": "^1.12.0",
     "discord.js": "^14.21.0",
     "http-status-codes": "^2.3.0",
     "inversify": "6.2.1",
