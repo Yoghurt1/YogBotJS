@@ -6,7 +6,7 @@
     "moduleResolution": "nodenext",
     "sourceMap": true,
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": ".",
     "noUnusedLocals": true,
     "forceConsistentCasingInFileNames": true,
     "types": [],
@@ -16,7 +16,7 @@
     "typeRoots": ["src/@types", "node_modules/@types"],
   },
   "include": [
-    "./src/**/*.ts", "src/index.tsx",
+    "./src/**/*.ts", "./tests/**/*.ts"
   ],
   "exclude": [
     "node_modules"

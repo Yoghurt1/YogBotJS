@@ -31,7 +31,7 @@ export class DiscordClient {
       this.logger.info('Starting discord client...')
       await this.client.login(DISCORD_TOKEN)
 
-      this.client.once('ready', () => {
+      this.client.once('clientReady', () => {
         this.logger.info(`Logged in as ${this.client.user.tag}.`)
       })
 
@@ -47,7 +47,7 @@ export class DiscordClient {
   }
 
   public async sendMessage(message: EmbedBuilder): Promise<void> {
-    const channel: Channel = this.client.channels.cache.get(CHANNEL_ID)
+    const channel: Channel = await this.client.channels.fetch(CHANNEL_ID)
 
     if (channel.isSendable()) {
       await sleep(DELAY)

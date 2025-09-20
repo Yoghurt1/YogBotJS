@@ -1,4 +1,4 @@
-import { EmbedBuilder, SlashCommandBuilder } from 'discord.js'
+import { ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from 'discord.js'
 import { SlashCommand } from '../../interfaces/slashCommand'
 import { DEFAULT_EMBED } from '../../constants'
 
@@ -10,7 +10,7 @@ module.exports = new SlashCommand({
   data: new SlashCommandBuilder()
     .setName('donate')
     .setDescription('Returns information on how to contribute to running the bot.'),
-  execute: async (interaction) => {
+  execute: async (interaction: ChatInputCommandInteraction) => {
     await interaction.reply({ embeds: [donateEmbed] })
   }
 })

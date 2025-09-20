@@ -34,7 +34,8 @@ export class MessageMapper {
 
   private getEmote(message: EnrichedRaceControlMessage): string {
     if (!!message.flag) {
-      return Emote[Flag[message.flag]]
+      const flag: string = Object.entries(Flag).find(([_key, value]) => value === message.flag)[0]
+      return Emote[flag]
     }
 
     if (message.category === RaceControlCategory.SAFETY_CAR) {
@@ -59,10 +60,6 @@ export class MessageMapper {
 
     if (message.message.includes('TRACK LIMITS')) {
       return Emote.OFF_TRACK
-    }
-
-    if (message.message.includes('DOUBLE YELLOW')) {
-      return Emote.DOUBLE_YELLOW
     }
 
     return ''

@@ -11,6 +11,8 @@ import { SNSClient } from '@aws-sdk/client-sns'
 import { AWS_REGION } from './config'
 import { SnsService } from './services/aws/snsService'
 import { MessageService } from './services/message/messageService'
+import { MessageHandler } from './services/message/messageHandler'
+import { OpenF1Service } from './services/openf1/openF1Service'
 
 const iocContainer = new Container()
 
@@ -27,6 +29,8 @@ iocContainer.bind<RestClient>(TYPES.RestClient).to(RestClient).inSingletonScope(
 iocContainer.bind<MessageEnricher>(TYPES.MessageEnricher).to(MessageEnricher).inSingletonScope()
 iocContainer.bind<MessageMapper>(TYPES.MessageMapper).to(MessageMapper).inSingletonScope()
 iocContainer.bind<MessageService>(TYPES.MessageService).to(MessageService).inSingletonScope()
+iocContainer.bind<MessageHandler>(TYPES.MessageHandler).to(MessageHandler).inSingletonScope()
 iocContainer.bind<SnsService>(TYPES.SnsService).to(SnsService).inSingletonScope()
+iocContainer.bind<OpenF1Service>(TYPES.OpenF1Service).to(OpenF1Service).inSingletonScope()
 
 export default iocContainer

@@ -1,15 +1,14 @@
 import { connect, IClientOptions, MqttClient } from 'mqtt'
 import { MQTT_PORT, MQTT_URL, OPENF1_USERNAME } from '../../config'
-import { RestClient } from './restClient'
 import { inject, injectable } from 'inversify'
 import { TokenResponse } from '../../interfaces/openf1/tokenResponse'
 import { Logger } from 'pino'
 import { TYPES } from '../../types'
 import { exit } from 'process'
-import { BaseMessage } from '../../interfaces/openf1/baseMessage'
 import { Topic } from '../../enums'
 import { sleep } from '../../util'
-import { MessageService } from '../message/messageService'
+import { MessageHandler } from '../message/messageHandler'
+import { OpenF1Service } from '../openf1/openF1Service'
 
 @injectable()
 export class F1MqttClient {
@@ -20,28 +19,28 @@ export class F1MqttClient {
   }
 
   constructor(
-    @inject(TYPES.RestClient) private restClient: RestClient,
+    @inject(TYPES.OpenF1Service) private openF1Service: OpenF1Service,
     @inject(TYPES.Logger) private logger: Logger,
-    @inject(TYPES.MessageService) private messageService: MessageService
-  ) {
-    this.logger.info('Initializing MQTT client...')
-    void this.restClient.authenticate().then((tokenResponse: TokenResponse) => {
-      this.MQTT_OPTIONS.password = tokenResponse.access_token
-
-      this.client = connect(MQTT_URL, this.MQTT_OPTIONS)
-
-      this.setListeners()
-    })
-
-    // Refreshing 100 seconds before token expiry, 3500000 ms
-    setInterval(() => this.refreshClient(), 3500000)
-  }
+    @inject(TYPES.MessageHandler) private messageHandler: MessageHandler
+  ) { }
 
   public async start(): Promise<void> {
+    this.logger.info('Initializing MQTT client...')
+    const tokenResponse: TokenResponse = await this.openF1Service.authenticate()
+
+    this.MQTT_OPTIONS.password = tokenResponse.access_token
+
+    this.client = connect(MQTT_URL, this.MQTT_OPTIONS)
+
+    this.setListeners()
+
     while (!this.client || !this.client.connected) {
       this.logger.info('Waiting for MQTT client to connect...')
       await sleep()
     }
+
+    // Refreshing 100 seconds before token expiry, 3500000 ms
+    setInterval(() => this.refreshClient(), 3500000)
 
     for (const topic of Object.values(Topic)) {
       this.client.subscribe(topic, this.subscribeHandler.bind(this, topic))
@@ -61,7 +60,7 @@ export class F1MqttClient {
     let tokenResponse: TokenResponse
 
     try {
-      tokenResponse = await this.restClient.authenticate()
+      tokenResponse = await this.openF1Service.authenticate()
     } catch (error) {
       this.logger.error(error, 'Failed to authenticate.')
       retries += 1
@@ -92,12 +91,7 @@ export class F1MqttClient {
       this.logger.info('Connected to MQTT broker.')
     })
 
-    this.client.on('message', async (topic: Topic, message: Buffer) => {
-      const parsedMessage: BaseMessage = JSON.parse(message.toString())
-      this.logger.info(`Received message on topic ${topic}.`)
-      this.logger.debug(parsedMessage)
-      await this.messageService.sendMessage(parsedMessage, topic)
-    })
+    this.client.on('message', this.messageHandler.handleMessage)
 
     this.client.on('error', (error: Error) => {
       this.logger.error(error, 'MQTT client error.')
