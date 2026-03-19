@@ -12,5 +12,9 @@ export const TYPES = {
   // Services
   MessageEnricher: 'MessageEnricher',
   MessageMapper: 'MessageMapper',
-  MessageService: 'MessageService'
+  MessageService: 'MessageService',
+  MessageHandler: 'MessageHandler',
+
+  // OpenF1
+  OpenF1Service: 'OpenF1Service'
 }

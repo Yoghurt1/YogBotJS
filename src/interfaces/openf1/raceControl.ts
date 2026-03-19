@@ -17,7 +17,7 @@ export interface RaceControl {
   meeting_key: number
   message: string
   scope?: Scope
-  sector: number
+  sector?: number
   session_key: number
 }
 

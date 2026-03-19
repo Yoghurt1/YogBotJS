@@ -24,13 +24,13 @@ export default [{
       ...globals.node
     },
 
+    parserOptions: {
+      projectService: true
+    },
+
     parser: tsParser,
     ecmaVersion: 5,
     sourceType: "module",
-
-    parserOptions: {
-      project: "tsconfig.json"
-    },
   },
 
   rules: {
@@ -79,7 +79,7 @@ export default [{
 
     "@typescript-eslint/naming-convention": ["error", {
       selector: "variable",
-      format: ["camelCase", "UPPER_CASE"]
+      format: ["camelCase", "UPPER_CASE", "PascalCase"],
     }, {
         selector: "function",
         format: ["camelCase", "PascalCase"]
@@ -91,19 +91,23 @@ export default [{
         format: ["camelCase", "snake_case", "PascalCase", "UPPER_CASE"]
       }, {
         selector: "parameterProperty",
-        format: ["camelCase", "UPPER_CASE"]
+        format: ["camelCase", "UPPER_CASE"],
+        leadingUnderscore: "allow"
       }, {
         selector: "classProperty",
         format: ["camelCase", "snake_case", "UPPER_CASE"]
       }, {
         selector: "objectLiteralProperty",
-        format: ["camelCase", "snake_case", "PascalCase", "UPPER_CASE"]
+        format: ["camelCase", "snake_case", "PascalCase", "UPPER_CASE"],
+        leadingUnderscore: "allow"
       }, {
         selector: "typeProperty",
-        format: ["camelCase", "snake_case"]
+        format: ["camelCase", "snake_case"],
+        leadingUnderscore: "allow"
       }, {
         selector: "default",
-        format: ["camelCase"]
+        format: ["camelCase"],
+        leadingUnderscore: "allow"
       }, {
         selector: "import",
         format: ["PascalCase", "camelCase"]
@@ -119,7 +123,9 @@ export default [{
     }],
 
     "@typescript-eslint/no-unused-expressions": "error",
-    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/no-unused-vars": ["error", {
+      destructuredArrayIgnorePattern: "^_" 
+    }],
 
     "@typescript-eslint/no-use-before-define": ["error", {
       functions: false

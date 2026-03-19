@@ -16,5 +16,6 @@ module.exports = {
 
   // AWS
   AWS_REGION: process.env.AWS_REGION || 'eu-west-1',
-  ERROR_TOPIC_ARN: process.env.ERROR_TOPIC_ARN
+  ERROR_TOPIC_ARN: process.env.ERROR_TOPIC_ARN,
+  ENABLE_SNS_ERRORS: process.env.ENABLE_SNS_ERRORS === 'true' || false,
 }
