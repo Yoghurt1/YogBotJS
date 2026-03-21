@@ -28,12 +28,12 @@ export class DiscordClient {
     try {
       await this.registerCommands()
 
-      this.logger.info('Starting discord client...')
-      await this.client.login(DISCORD_TOKEN)
-
       this.client.once('clientReady', () => {
         this.logger.info(`Logged in as ${this.client.user.tag}.`)
       })
+
+      this.logger.info('Starting discord client...')
+      await this.client.login(DISCORD_TOKEN)
 
       this.client.on(Events.InteractionCreate, this.handleInteraction.bind(this))
     } catch (error) {

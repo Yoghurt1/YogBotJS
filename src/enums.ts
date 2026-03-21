@@ -63,3 +63,16 @@ export enum Emote {
   SB = '🟪',
   DRIVER_CHANGE = '🔄'
 }
+
+export enum FlagColour {
+  GREEN = 0x3EA808,
+  YELLOW = 0xE8E517,
+  DOUBLE_YELLOW = 0xE8E517,
+  RED = 0xFF1801,
+  BLACK = 0x000000,
+  WHITE = 0xFFFFFF,
+  BLACK_AND_WHITE = 0x000000,
+  BLUE = 0x002BE8,
+  CHEQUERED = 0xFFFFFF,
+  CLEAR = 0x3EA808
+}
