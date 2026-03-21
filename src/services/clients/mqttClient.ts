@@ -55,7 +55,7 @@ export class F1MqttClient {
     }
   }
 
-  private async refreshClient(retries = 0) {
+  private async refreshClient(delay = 1) {
     this.logger.info('Refreshing MQTT client...')
     let tokenResponse: TokenResponse
 
@@ -63,12 +63,12 @@ export class F1MqttClient {
       tokenResponse = await this.openF1Service.authenticate()
     } catch (error) {
       this.logger.error(error, 'Failed to authenticate.')
-      retries += 1
 
-      if (retries <= 3) {
-        this.logger.error(`Retrying... (${retries}/3)`)
-        await this.refreshClient(retries)
-      }
+      delay = delay ** 2
+      this.logger.error(`Retrying after ${delay}s...`)
+
+      await sleep(delay * 1000)
+      await this.refreshClient(delay)
 
       this.logger.fatal('Max retries reached. Exiting.')
       exit(1)
