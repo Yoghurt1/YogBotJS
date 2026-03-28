@@ -1,14 +1,16 @@
 import { inject, injectable } from 'inversify'
 import { Logger } from 'pino'
-import { TYPES } from '../../types'
-import { Session, SessionRequest } from '../../interfaces/openf1/session'
-import { EnrichedRaceControlMessage, RaceControlMessage } from '../../interfaces/openf1/raceControl'
-import { Meeting, MeetingRequest } from '../../interfaces/openf1/meeting'
-import { Topic } from '../../enums'
-import { OpenF1Service } from '../openf1/openF1Service'
+import { TYPES } from '../types'
+import { Session, SessionRequest } from '../interfaces/openf1/session'
+import { Meeting, MeetingRequest } from '../interfaces/openf1/meeting'
+import { Topic } from '../enums'
+import { OpenF1Service } from './openf1/openF1Service'
+import { EnrichedRaceControlMessage, RaceControlMessage } from '../interfaces/openf1/raceControl'
+import { Enriched } from '../interfaces/openf1/enrichedMessage'
+import { Sessioned } from '../interfaces/openf1/baseMessage'
 
 @injectable()
-export class MessageEnricher {
+export class EnrichmentService {
   private sessionData: Session[] = []
   private meetingData: Meeting[] = []
 
@@ -28,6 +30,17 @@ export class MessageEnricher {
     }
   }
 
+  public async enrichResponse<T extends Sessioned>(response: T): Promise<Enriched<T>> {
+    const session: Session = await this.getSessionData({ session_key: response.session_key })
+    const meeting: Meeting = await this.getMeetingData({ meeting_key: response.meeting_key })
+
+    return {
+      message: response,
+      session: session,
+      meeting: meeting
+    }
+  }
+
   private async getSessionData(request: SessionRequest): Promise<Session> {
     return this.getData(Topic.Sessions, this.sessionData, request)
   }
@@ -37,27 +50,30 @@ export class MessageEnricher {
   }
 
   private async getData<RestResponse, RestRequest>(topic: Topic, cachedData: RestResponse[], request: RestRequest): Promise<RestResponse> {
-    if (cachedData.length > 0) {
-      const hit: RestResponse = cachedData.find(cachedResponse => this.findByRequest(request, cachedResponse))
+    let response: RestResponse
 
-      if (hit) {
-        return hit
+    if (cachedData.length > 0) {
+      response = cachedData.find(cachedResponse => this.findByRequest(request, cachedResponse))
+
+      if (response) {
+        return response
       }
     }
 
     try {
-      const responseData: RestResponse = await this.callClient(topic, request)
+      response = await this.callClient(topic, request)
 
       this.logger.info(`Data retrieved successfully from endpoint ${topic}.`)
       this.logger.debug(request, 'Request')
-      this.logger.debug(responseData, 'Response')
+      this.logger.debug(response, 'Response')
 
-      cachedData.push(responseData)
-
-      return responseData
+      cachedData.push(response)
     } catch (error) {
       this.logger.error(error, 'Failed to retrieve session data.')
+      throw error
     }
+
+    return response
   }
 
   private findByRequest<RestRequest, RestResponse>(request: RestRequest, response: RestResponse): boolean {

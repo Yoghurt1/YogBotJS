@@ -5,14 +5,19 @@ import { logger } from './logger'
 import { DiscordClient } from './services/clients/discordClient'
 import { F1MqttClient } from './services/clients/mqttClient'
 import { RestClient } from './services/clients/restClient'
-import { MessageEnricher } from './services/message/messageEnricher'
-import { MessageMapper } from './services/message/messageMapper'
+import { EnrichmentService } from './services/enrichmentService'
+import { RaceControlMessageMapper } from './mappers/raceControlMessageMapper'
 import { SNSClient } from '@aws-sdk/client-sns'
 import { AWS_REGION } from './config'
 import { SnsService } from './services/aws/snsService'
 import { MessageService } from './services/message/messageService'
 import { MessageHandler } from './services/message/messageHandler'
 import { OpenF1Service } from './services/openf1/openF1Service'
+import { SnsMessageMapper } from './mappers/snsMessageMapper'
+import { CarCommandService } from './services/commands/carCommandService'
+import { WeatherCommandService } from './services/commands/weatherCommandService'
+import { WeatherResponseMapper } from './mappers/weatherResponseMapper'
+import { CarResponseMapper } from './mappers/carResponseMapper'
 
 const iocContainer = new Container()
 
@@ -26,11 +31,18 @@ iocContainer.bind<F1MqttClient>(TYPES.F1MqttClient).to(F1MqttClient).inSingleton
 iocContainer.bind<RestClient>(TYPES.RestClient).to(RestClient).inSingletonScope()
 
 // Services
-iocContainer.bind<MessageEnricher>(TYPES.MessageEnricher).to(MessageEnricher).inSingletonScope()
-iocContainer.bind<MessageMapper>(TYPES.MessageMapper).to(MessageMapper).inSingletonScope()
+iocContainer.bind<EnrichmentService>(TYPES.EnrichmentService).to(EnrichmentService).inSingletonScope()
 iocContainer.bind<MessageService>(TYPES.MessageService).to(MessageService).inSingletonScope()
 iocContainer.bind<MessageHandler>(TYPES.MessageHandler).to(MessageHandler).inSingletonScope()
 iocContainer.bind<SnsService>(TYPES.SnsService).to(SnsService).inSingletonScope()
 iocContainer.bind<OpenF1Service>(TYPES.OpenF1Service).to(OpenF1Service).inSingletonScope()
+iocContainer.bind<CarCommandService>(TYPES.CarCommandService).to(CarCommandService).inSingletonScope()
+iocContainer.bind<WeatherCommandService>(TYPES.WeatherCommandService).to(WeatherCommandService).inSingletonScope()
+
+// Mappers
+iocContainer.bind<RaceControlMessageMapper>(TYPES.RaceControlMessageMapper).to(RaceControlMessageMapper).inSingletonScope()
+iocContainer.bind<SnsMessageMapper>(TYPES.SnsMessageMapper).to(SnsMessageMapper).inSingletonScope()
+iocContainer.bind<WeatherResponseMapper>(TYPES.WeatherResponseMapper).to(WeatherResponseMapper).inSingletonScope()
+iocContainer.bind<CarResponseMapper>(TYPES.CarResponseMapper).to(CarResponseMapper).inSingletonScope()
 
 export default iocContainer

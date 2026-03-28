@@ -10,7 +10,7 @@ import { MqttClient } from 'mqtt'
 import { generateTokenResponse } from '../../../fixtures/openf1Fixtures'
 import { OpenF1Service } from '../../../../src/services/openf1/openF1Service'
 import { MQTT_URL } from '../../../../src/config'
-import { Topic } from '../../../../src/enums'
+import { MessageHandler } from '../../../../src/services/message/messageHandler'
 
 describe('F1MqttClient', () => {
   const mqttClient: sinon.SinonStubbedInstance<MqttClient> = sinon.createStubInstance(MqttClient)
@@ -32,19 +32,19 @@ describe('F1MqttClient', () => {
 
   let openF1Service: OpenF1Service
   let logger: Logger
-  let messageService: MessageService
+  let messageHandler: MessageHandler
 
   beforeEach(() => {
     openF1Service = mock(OpenF1Service)
     logger = getLogger()
-    messageService = mock(MessageService)
+    messageHandler = mock(MessageHandler)
 
     when(openF1Service.authenticate()).thenResolve(generateTokenResponse())
 
     client = new F1MqttClient(
       instance(openF1Service),
       logger,
-      instance(messageService)
+      instance(messageHandler)
     )
   })
 
@@ -57,7 +57,7 @@ describe('F1MqttClient', () => {
       // connect, message and error listeners
       assert.isTrue(mqttClient.on.callCount === 3)
       // Subscribing to all topics in the enum
-      assert.isTrue(mqttClient.subscribe.callCount === Object.values(Topic).length)
+      assert.isTrue(mqttClient.subscribe.calledOnce)
     })
   })
 })

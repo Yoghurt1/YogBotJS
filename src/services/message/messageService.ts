@@ -2,8 +2,8 @@ import { injectable, inject } from 'inversify'
 import { Logger } from 'pino'
 import { TYPES } from '../../types'
 import { DiscordClient } from '../clients/discordClient'
-import { MessageEnricher } from './messageEnricher'
-import { MessageMapper } from './messageMapper'
+import { EnrichmentService } from '../enrichmentService'
+import { RaceControlMessageMapper } from '../../mappers/raceControlMessageMapper'
 import { EnrichedRaceControlMessage, RaceControlMessage } from '../../interfaces/openf1/raceControl'
 import { EmbedBuilder } from 'discord.js'
 
@@ -11,8 +11,8 @@ import { EmbedBuilder } from 'discord.js'
 export class MessageService {
   public constructor(
     @inject(TYPES.Logger) private logger: Logger,
-    @inject(TYPES.MessageEnricher) private messageEnricher: MessageEnricher,
-    @inject(TYPES.MessageMapper) private messageMapper: MessageMapper,
+    @inject(TYPES.EnrichmentService) private enrichmentService: EnrichmentService,
+    @inject(TYPES.RaceControlMessageMapper) private messageMapper: RaceControlMessageMapper,
     @inject(TYPES.DiscordClient) private discordClient: DiscordClient
   ) {}
 
@@ -23,7 +23,7 @@ export class MessageService {
     }
 
     this.logger.info('Enriching message...')
-    const enrichedMessage: EnrichedRaceControlMessage = await this.messageEnricher.enrichRaceControlMessage(message)
+    const enrichedMessage: EnrichedRaceControlMessage = await this.enrichmentService.enrichRaceControlMessage(message)
 
     const mappedMessage: EmbedBuilder = this.messageMapper.mapRaceControlMessage(enrichedMessage)
 

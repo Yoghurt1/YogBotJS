@@ -11,7 +11,8 @@
     "start": "node dist/index.js",
     "start:dev": "tsc --project tsconfig.build.json && node dist/index.js",
     "start:prod": "npm run build && npm run start",
-    "dev": "nodemon -e ts  --exec \"npm run start:dev\"",
+    "dev": "DELAY=0 nodemon -e ts  --exec \"npm run start:dev\"",
+    "dev:local": "MQTT_URL=mqtt://localhost MQTT_PORT=1883 npm run dev",
     "test-unit": "mocha 'tests/unit/**/*.ts' --import=tsx --exit"
   },
   "repository": {

@@ -1,38 +1,29 @@
 import { inject, injectable } from 'inversify'
-import { TYPES } from '../../types'
+import { TYPES } from '../types'
 import { Logger } from 'pino'
-import { Emote, Flag, RaceControlCategory } from '../../enums'
-import { EnrichedRaceControlMessage } from '../../interfaces/openf1/raceControl'
-import { APIEmbed, codeBlock, EmbedBuilder } from 'discord.js'
+import { Emote, Flag, RaceControlCategory } from '../enums'
+import { EnrichedRaceControlMessage, RaceControlMessage } from '../interfaces/openf1/raceControl'
+import { EmbedBuilder } from 'discord.js'
 import { DateTime } from 'luxon'
-import { DEFAULT_EMBED } from '../../constants'
+import { DEFAULT_EMBED } from '../constants'
+import { Meeting } from '../interfaces/openf1/meeting'
 
 @injectable()
-export class MessageMapper {
+export class RaceControlMessageMapper {
   constructor(
     @inject(TYPES.Logger) private logger: Logger
   ) {}
 
   public mapRaceControlMessage(message: EnrichedRaceControlMessage): EmbedBuilder {
     this.logger.info('Mapping enriched message to Discord embed...')
+
     return EmbedBuilder.from(DEFAULT_EMBED)
       .setTitle(`${message.meeting.meeting_official_name} - ${message.session.session_name}`)
       .setDescription(`${this.getEmote(message)} ${message.message}`)
-      .setFooter({ text: this.getFooter(message) })
+      .setFooter({ text: this.getFooter(message, message.meeting) })
   }
 
-  public mapErrorMessage(error: Error): APIEmbed {
-    const builder: EmbedBuilder =
-      new EmbedBuilder()
-        .setColor(0xFF1801)
-        .setTitle(`Fatal error - ${error.name}`)
-        .setDescription(`${error.message}\n${codeBlock(error.stack)}`)
-        .setFooter({ text: DateTime.now().toRFC2822() })
-
-    return builder.data
-  }
-
-  private getEmote(message: EnrichedRaceControlMessage): string {
+  private getEmote(message: RaceControlMessage): string {
     if (!!message.flag) {
       const flag: string = Object.entries(Flag).find(([_key, value]) => value === message.flag)[0]
       return Emote[flag]
@@ -65,8 +56,8 @@ export class MessageMapper {
     return ''
   }
 
-  private getFooter(message: EnrichedRaceControlMessage): string {
-    const offset: number = parseInt(message.meeting.gmt_offset.split(':')[0], 10)
+  private getFooter(message: RaceControlMessage, meeting: Meeting): string {
+    const offset: number = parseInt(meeting.gmt_offset.split(':')[0], 10)
     const msgDate: DateTime = DateTime.fromISO(message.date, { setZone: true }).plus({ hours: offset })
     let footer = `${msgDate.toFormat('HH:mm:ss')}`
 

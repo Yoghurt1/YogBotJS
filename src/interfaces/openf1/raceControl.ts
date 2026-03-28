@@ -1,8 +1,8 @@
 import { RaceControlCategory, Scope, Flag } from '../../enums'
-import { BaseMessage } from './baseMessage'
+import { Sessioned, SessionedMessage } from './baseMessage'
 import { EnrichedMessage } from './enrichedMessage'
 
-export interface RaceControl {
+export interface RaceControl extends Sessioned {
   category: RaceControlCategory
   /**
    * ISO date string
@@ -21,6 +21,6 @@ export interface RaceControl {
   session_key: number
 }
 
-export interface RaceControlMessage extends RaceControl, BaseMessage {}
+export interface RaceControlMessage extends RaceControl, SessionedMessage {}
 
 export interface EnrichedRaceControlMessage extends RaceControlMessage, EnrichedMessage {}

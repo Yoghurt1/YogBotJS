@@ -24,6 +24,8 @@ export interface Meeting {
   year: number
 }
 
-export interface MeetingRequest extends Partial<Meeting> {}
+export interface MeetingRequest extends Partial<Omit<Meeting, 'meeting_key'>> {
+  meeting_key?: number | string
+}
 
 export interface MeetingMessage extends Meeting, BaseMessage {}

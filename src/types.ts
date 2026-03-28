@@ -10,10 +10,17 @@ export const TYPES = {
   SnsService: 'SnsService',
 
   // Services
-  MessageEnricher: 'MessageEnricher',
-  MessageMapper: 'MessageMapper',
+  EnrichmentService: 'EnrichmentService',
   MessageService: 'MessageService',
   MessageHandler: 'MessageHandler',
+  CarCommandService: 'CarCommandService',
+  WeatherCommandService: 'WeatherCommandService',
+
+  // Mappers
+  RaceControlMessageMapper: 'RaceControlMessageMapper',
+  SnsMessageMapper: 'SnsMessageMapper',
+  WeatherResponseMapper: 'WeatherResponseMapper',
+  CarResponseMapper: 'CarResponseMapper',
 
   // OpenF1
   OpenF1Service: 'OpenF1Service'

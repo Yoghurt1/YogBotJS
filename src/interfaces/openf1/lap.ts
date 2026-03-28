@@ -1,7 +1,8 @@
+import { MeetingSessionKey } from '../../constants'
 import { Segment } from '../../enums'
-import { BaseMessage } from './baseMessage'
+import { BaseMessage, SessionedRequest } from './baseMessage'
 
-export interface Laps {
+export interface Lap {
   /**
    * ISO date string
    *
@@ -43,4 +44,6 @@ export interface Laps {
   st_speed: number
 }
 
-export interface MqttLaps extends Laps, BaseMessage {}
+export interface LapRequest extends Partial<Omit<Lap, MeetingSessionKey>>, SessionedRequest {}
+
+export interface LapMessage extends Lap, BaseMessage {}

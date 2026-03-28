@@ -1,6 +1,6 @@
 import 'mocha'
 import { assert } from 'chai'
-import { MessageEnricher } from '../../../../src/services/message/messageEnricher'
+import { MessageEnricher } from '../../../../src/services/enrichmentService'
 import { Logger } from 'pino'
 import { OpenF1Service } from '../../../../src/services/openf1/openF1Service'
 import { getLogger } from '../../../fixtures/loggerFixtures'

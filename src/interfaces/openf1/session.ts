@@ -1,4 +1,5 @@
-import { BaseMessage } from './baseMessage'
+import { MeetingSessionKey } from '../../constants'
+import { BaseMessage, SessionedRequest } from './baseMessage'
 
 /** TODO: Create enums for these fields
  * circuit_key
@@ -32,7 +33,7 @@ export interface Session {
   date_start: string
   /**
    * The difference in hours and minutes between local time at the location of the event and Greenwich Mean Time (GMT).
-   * // TODO: Format here is HH:MM:SS - may be a better way to type this?
+   * TODO: Format here is HH:MM:SS - may be a better way to type this?
    */
   gmt_offset: string
   location: string
@@ -43,6 +44,6 @@ export interface Session {
   year: number
 }
 
-export interface SessionRequest extends Partial<Session> {}
+export interface SessionRequest extends Partial<Omit<Session, MeetingSessionKey>>, SessionedRequest {}
 
 export interface SessionMessage extends Session, BaseMessage {}

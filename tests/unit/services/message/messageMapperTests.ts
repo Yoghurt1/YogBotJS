@@ -1,6 +1,6 @@
 import 'mocha'
 import { assert } from 'chai'
-import { MessageMapper } from '../../../../src/services/message/messageMapper'
+import { MessageMapper } from '../../../../src/services/mappers/raceControlMessageMapper'
 import { Logger } from 'pino'
 import { getLogger } from '../../../fixtures/loggerFixtures'
 import { EnrichedRaceControlMessage } from '../../../../src/interfaces/openf1/raceControl'

@@ -2,16 +2,16 @@ import { inject, injectable } from 'inversify'
 import { TYPES } from '../../types'
 import { PublishCommand, PublishCommandInput, PublishCommandOutput, SNSClient } from '@aws-sdk/client-sns'
 import { ERROR_TOPIC_ARN } from '../../config'
-import { MessageMapper } from '../message/messageMapper'
 import { Logger } from 'pino'
 import { AwsService } from './awsService'
+import { SnsMessageMapper } from '../../mappers/snsMessageMapper'
 
 @injectable()
 export class SnsService extends AwsService {
   public constructor(
     @inject(TYPES.Logger) protected logger: Logger,
     @inject(TYPES.SNSClient) protected client: SNSClient,
-    @inject(TYPES.MessageMapper) private messageMapper: MessageMapper
+    @inject(TYPES.SnsMessageMapper) private messageMapper: SnsMessageMapper
   ) { super(logger, client) }
 
   public async publishError(err: Error): Promise<PublishCommandOutput> {

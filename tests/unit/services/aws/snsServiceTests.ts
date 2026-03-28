@@ -4,7 +4,7 @@ import { capture, mock, when, instance, verify, anyOfClass } from 'ts-mockito'
 import { SnsService } from '../../../../src/services/aws/snsService'
 import { Logger } from 'pino'
 import { PublishCommand, SNSClient } from '@aws-sdk/client-sns'
-import { MessageMapper } from '../../../../src/services/message/messageMapper'
+import { MessageMapper } from '../../../../src/services/mappers/raceControlMessageMapper'
 import { getLogger } from '../../../fixtures/loggerFixtures'
 import { APIEmbed } from 'discord.js'
 

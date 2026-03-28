@@ -8,6 +8,15 @@ import { Meeting, MeetingRequest } from '../../interfaces/openf1/meeting'
 import { Topic } from '../../enums'
 import { StatusCodes } from 'http-status-codes'
 import { TYPES } from '../../types'
+import { CarData, CarDataRequest } from '../../interfaces/openf1/carData'
+import { Driver, DriverRequest } from '../../interfaces/openf1/driver'
+import { Interval, IntervalRequest } from '../../interfaces/openf1/interval'
+import { LapRequest, Lap } from '../../interfaces/openf1/lap'
+import { PositionRequest, Position } from '../../interfaces/openf1/position'
+import { StintRequest, Stint } from '../../interfaces/openf1/stint'
+import { WeatherRequest, Weather } from '../../interfaces/openf1/weather'
+import { Pit, PitRequest } from '../../interfaces/openf1/pit'
+import { DateTime } from 'luxon'
 
 @injectable()
 export class RestClient {
@@ -46,6 +55,41 @@ export class RestClient {
 
   public async getMeetings(params?: MeetingRequest): Promise<Meeting[]> {
     return this.httpHandler(() => this.axios.get<Meeting[]>(Topic.Meetings, { params }))
+  }
+
+  public async getCarData(params?: CarDataRequest): Promise<CarData[]> {
+    const date: string = params?.date ?? DateTime.now().minus({ minutes: 2 }).toISO()
+    delete params?.date
+
+    return this.httpHandler(() => this.axios.get<CarData[]>(`${Topic.CarData}?date>=${date}`, { params }))
+  }
+
+  public async getDrivers(params?: DriverRequest): Promise<Driver[]> {
+    return this.httpHandler(() => this.axios.get<Driver[]>(Topic.Drivers, { params }))
+  }
+
+  public async getIntervals(params?: IntervalRequest): Promise<Interval[]> {
+    return this.httpHandler(() => this.axios.get<Interval[]>(Topic.Intervals, { params }))
+  }
+
+  public async getLaps(params?: LapRequest): Promise<Lap[]> {
+    return this.httpHandler(() => this.axios.get<Lap[]>(Topic.Laps, { params }))
+  }
+
+  public async getPits(params?: PitRequest): Promise<Pit[]> {
+    return this.httpHandler(() => this.axios.get<Pit[]>(Topic.Pit, { params }))
+  }
+
+  public async getPositions(params?: PositionRequest): Promise<Position[]> {
+    return this.httpHandler(() => this.axios.get<Position[]>(Topic.Position, { params }))
+  }
+
+  public async getStints(params?: StintRequest): Promise<Stint[]> {
+    return this.httpHandler(() => this.axios.get<Stint[]>(Topic.Stints, { params }))
+  }
+
+  public async getWeather(params?: WeatherRequest): Promise<Weather[]> {
+    return this.httpHandler(() => this.axios.get<Weather[]>(Topic.Weather, { params }))
   }
 
   private async httpHandler<T>(request: () => AxiosPromise<T>, retries = 0): Promise<T> {

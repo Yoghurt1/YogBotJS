@@ -38,7 +38,15 @@ export enum Scope {
 export enum Topic {
   RaceControl = 'v1/race_control',
   Sessions = 'v1/sessions',
-  Meetings = 'v1/meetings'
+  Meetings = 'v1/meetings',
+  CarData = 'v1/car_data',
+  Drivers = 'v1/drivers',
+  Intervals = 'v1/intervals',
+  Laps = 'v1/laps',
+  Pit = 'v1/pit',
+  Position = 'v1/position',
+  Stints = 'v1/stints',
+  Weather = 'v1/weather'
 }
 
 export enum Emote {
@@ -62,4 +70,17 @@ export enum Emote {
   PB = '🟩',
   SB = '🟪',
   DRIVER_CHANGE = '🔄'
+}
+
+export enum DRSState {
+  OFF = 'OFF',
+  ON = 'ON',
+  READY = 'READY',
+  UNKNOWN = 'UNKNOWN'
+}
+
+export enum Tyre {
+  SOFT = 'SOFT',
+  MEDIUM = 'MEDIUM',
+  HARD = 'HARD'
 }
