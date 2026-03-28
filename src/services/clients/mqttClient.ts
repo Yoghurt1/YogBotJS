@@ -91,7 +91,9 @@ export class F1MqttClient {
       this.logger.info('Connected to MQTT broker.')
     })
 
-    this.client.on('message', this.messageHandler.handleMessage)
+    this.client.on('message', async (topic: Topic, payload: Buffer) => {
+      await this.messageHandler.handleMessage(topic, payload)
+    })
 
     this.client.on('error', (error: Error) => {
       this.logger.error(error, 'MQTT client error.')
