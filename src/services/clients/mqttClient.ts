@@ -42,9 +42,7 @@ export class F1MqttClient {
     // Refreshing 100 seconds before token expiry, 3500000 ms
     setInterval(() => this.refreshClient(), 3500000)
 
-    for (const topic of Object.values(Topic)) {
-      this.client.subscribe(topic, this.subscribeHandler.bind(this, topic))
-    }
+    this.client.subscribe(Topic.RaceControl, this.subscribeHandler.bind(this, Topic.RaceControl))
   }
 
   private subscribeHandler(topic: string, error?: Error): void {
@@ -91,7 +89,7 @@ export class F1MqttClient {
       this.logger.info('Connected to MQTT broker.')
     })
 
-    this.client.on('message', this.messageHandler.handleMessage)
+    this.client.on('message', this.messageHandler.handleMessage.bind(this))
 
     this.client.on('error', (error: Error) => {
       this.logger.error(error, 'MQTT client error.')

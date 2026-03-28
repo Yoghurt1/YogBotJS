@@ -1,4 +1,5 @@
-import { BaseMessage } from './baseMessage'
+import { MeetingSessionKey } from '../../constants'
+import { BaseMessage, SessionedRequest } from './baseMessage'
 
 /** TODO: Create enums for these fields
  * circuit_key
@@ -43,6 +44,6 @@ export interface Session {
   year: number
 }
 
-export interface SessionRequest extends Partial<Session> {}
+export interface SessionRequest extends Partial<Omit<Session, MeetingSessionKey>>, SessionedRequest {}
 
 export interface SessionMessage extends Session, BaseMessage {}

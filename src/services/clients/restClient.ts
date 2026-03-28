@@ -8,6 +8,9 @@ import { Meeting, MeetingRequest } from '../../interfaces/openf1/meeting'
 import { Topic } from '../../enums'
 import { StatusCodes } from 'http-status-codes'
 import { TYPES } from '../../types'
+import { CarData, CarDataRequest } from '../../interfaces/openf1/carData'
+import { Driver, DriverRequest } from '../../interfaces/openf1/driver'
+import { Interval, IntervalRequest } from '../../interfaces/openf1/interval'
 
 @injectable()
 export class RestClient {
@@ -46,6 +49,18 @@ export class RestClient {
 
   public async getMeetings(params?: MeetingRequest): Promise<Meeting[]> {
     return this.httpHandler(() => this.axios.get<Meeting[]>(Topic.Meetings, { params }))
+  }
+
+  public async getCarData(params?: CarDataRequest): Promise<CarData[]> {
+    return this.httpHandler(() => this.axios.get<CarData[]>(Topic.CarData, { params }))
+  }
+
+  public async getDrivers(params?: DriverRequest): Promise<Driver[]> {
+    return this.httpHandler(() => this.axios.get<Driver[]>(Topic.Drivers, { params }))
+  }
+
+  public async getIntervals(params?: IntervalRequest): Promise<Interval[]> {
+    return this.httpHandler(() => this.axios.get<Interval[]>(Topic.Intervals, { params }))
   }
 
   private async httpHandler<T>(request: () => AxiosPromise<T>, retries = 0): Promise<T> {
