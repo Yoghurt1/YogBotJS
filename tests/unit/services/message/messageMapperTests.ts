@@ -5,9 +5,10 @@ import { Logger } from 'pino'
 import { getLogger } from '../../../fixtures/loggerFixtures'
 import { EnrichedRaceControlMessage } from '../../../../src/interfaces/openf1/raceControl'
 import { generateEnrichedRaceControlMessage } from '../../../fixtures/messageFixtures'
-import { EmbedBuilder } from 'discord.js'
+import { APIEmbed, EmbedBuilder } from 'discord.js'
 import { DateTime } from 'luxon'
-import { Emote, Flag, RaceControlCategory } from '../../../../src/enums'
+import { Emote, Flag, FlagColour, RaceControlCategory } from '../../../../src/enums'
+import { DEFAULT_COLOUR } from '../../../../src/constants'
 
 describe('MessageMapper', () => {
   let mapper: MessageMapper
@@ -18,6 +19,21 @@ describe('MessageMapper', () => {
     logger = getLogger()
 
     mapper = new MessageMapper(logger)
+  })
+
+  describe('mapErrorMessage', () => {
+    it('should construct error embed correctly', () => {
+      const error: Error = new Error('Test error')
+      error.name = 'TestError'
+      error.stack = 'Error stack trace'
+
+      const embed: APIEmbed = mapper.mapErrorMessage(error)
+
+      assert.equal(embed.title, `Fatal error - ${error.name}`)
+      assert.include(embed.description, error.message)
+      assert.include(embed.description, error.stack)
+      assert.isNotEmpty(embed.footer.text)
+    })
   })
 
   describe('mapRaceControlMessage', () => {
@@ -118,6 +134,62 @@ describe('MessageMapper', () => {
           const embed: EmbedBuilder = mapper.mapRaceControlMessage(message)
 
           assert.include(embed.data.description, Emote.SAFETY_CAR)
+        })
+      })
+    })
+
+    describe('Colour', () => {
+      describe('Flag present', () => {
+        const cases = [
+          { flag: Flag.BLACK, flagColour: FlagColour.BLACK },
+          { flag: Flag.BLUE, flagColour: FlagColour.BLUE },
+          { flag: Flag.YELLOW, flagColour: FlagColour.YELLOW },
+          { flag: Flag.DOUBLE_YELLOW, flagColour: FlagColour.DOUBLE_YELLOW },
+          { flag: Flag.RED, flagColour: FlagColour.RED },
+          { flag: Flag.GREEN, flagColour: FlagColour.GREEN },
+          { flag: Flag.CLEAR, flagColour: FlagColour.CLEAR },
+          { flag: Flag.BLACK_AND_WHITE, flagColour: FlagColour.BLACK_AND_WHITE },
+          { flag: Flag.CHEQUERED, flagColour: FlagColour.CHEQUERED }
+        ]
+
+        for (const testCase of cases) {
+          it(`should use correct colour for flag ${testCase.flag}`, () => {
+            message = generateEnrichedRaceControlMessage(testCase.flag)
+
+            const embed: EmbedBuilder = mapper.mapRaceControlMessage(message)
+
+            assert.equal(embed.data.color, testCase.flagColour)
+          })
+        }
+      })
+
+      describe('No flag present', () => {
+        it(`should use yellow colour when message category is ${RaceControlCategory.SAFETY_CAR}`, () => {
+          message = generateEnrichedRaceControlMessage()
+          message.flag = undefined
+          message.category = RaceControlCategory.SAFETY_CAR
+
+          const embed: EmbedBuilder = mapper.mapRaceControlMessage(message)
+
+          assert.equal(embed.data.color, FlagColour.YELLOW)
+        })
+
+        it('should use black colour when message contains PENALTY', () => {
+          message = generateEnrichedRaceControlMessage(undefined, 'PENALTY')
+          message.flag = undefined
+
+          const embed: EmbedBuilder = mapper.mapRaceControlMessage(message)
+
+          assert.equal(embed.data.color, FlagColour.BLACK)
+        })
+
+        it('should use default colour if no other conditions met', () => {
+          message = generateEnrichedRaceControlMessage()
+          message.flag = undefined
+
+          const embed: EmbedBuilder = mapper.mapRaceControlMessage(message)
+
+          assert.equal(embed.data.color, DEFAULT_COLOUR)
         })
       })
     })

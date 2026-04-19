@@ -81,37 +81,37 @@ export default [{
       selector: "variable",
       format: ["camelCase", "UPPER_CASE", "PascalCase"],
     }, {
-        selector: "function",
-        format: ["camelCase", "PascalCase"]
-      }, {
-        selector: "typeLike",
-        format: ["PascalCase"]
-      }, {
-        selector: "enumMember",
-        format: ["camelCase", "snake_case", "PascalCase", "UPPER_CASE"]
-      }, {
-        selector: "parameterProperty",
-        format: ["camelCase", "UPPER_CASE"],
-        leadingUnderscore: "allow"
-      }, {
-        selector: "classProperty",
-        format: ["camelCase", "snake_case", "UPPER_CASE"]
-      }, {
-        selector: "objectLiteralProperty",
-        format: ["camelCase", "snake_case", "PascalCase", "UPPER_CASE"],
-        leadingUnderscore: "allow"
-      }, {
-        selector: "typeProperty",
-        format: ["camelCase", "snake_case"],
-        leadingUnderscore: "allow"
-      }, {
-        selector: "default",
-        format: ["camelCase"],
-        leadingUnderscore: "allow"
-      }, {
-        selector: "import",
-        format: ["PascalCase", "camelCase"]
-      }],
+      selector: "function",
+      format: ["camelCase", "PascalCase"]
+    }, {
+      selector: "typeLike",
+      format: ["PascalCase"]
+    }, {
+      selector: "enumMember",
+      format: ["camelCase", "snake_case", "PascalCase", "UPPER_CASE"]
+    }, {
+      selector: "parameterProperty",
+      format: ["camelCase", "UPPER_CASE"],
+      leadingUnderscore: "allow"
+    }, {
+      selector: "classProperty",
+      format: ["camelCase", "snake_case", "UPPER_CASE"]
+    }, {
+      selector: "objectLiteralProperty",
+      format: ["camelCase", "snake_case", "PascalCase", "UPPER_CASE"],
+      leadingUnderscore: "allow",
+    }, {
+      selector: "typeProperty",
+      format: ["camelCase", "snake_case"],
+      leadingUnderscore: "allow"
+    }, {
+      selector: "default",
+      format: ["camelCase"],
+      leadingUnderscore: "allow"
+    }, {
+      selector: "import",
+      format: ["PascalCase", "camelCase"]
+    }],
 
     "@typescript-eslint/no-empty-function": "error",
     "@typescript-eslint/no-explicit-any": "off",
@@ -135,6 +135,7 @@ export default [{
     "@typescript-eslint/prefer-namespace-keyword": "error",
     "@typescript-eslint/require-await": "error",
     "@typescript-eslint/triple-slash-reference": "off",
+
     "comma-dangle": "error",
     curly: "error",
     "default-case": "error",
