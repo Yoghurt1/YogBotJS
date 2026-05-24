@@ -54,6 +54,10 @@ export class MessageMapper {
       return Emote.NO_FURTHER_ACTION
     }
 
+    if (message.message.includes('PENALTY SERVED')) {
+      return Emote.NO_FURTHER_ACTION
+    }
+
     if (message.message.includes('PENALTY')) {
       return Emote.BLACK
     }
@@ -84,6 +88,10 @@ export class MessageMapper {
 
     if (message.category === RaceControlCategory.SAFETY_CAR) {
       return FlagColour.YELLOW
+    }
+
+    if (message.message.includes('PENALTY SERVED')) {
+      return FlagColour.GREEN
     }
 
     if (message.message.includes('PENALTY')) {
