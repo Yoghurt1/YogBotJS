@@ -102,7 +102,8 @@ describe('MessageMapper', () => {
           { message: 'NOTED', emote: Emote.NOTED },
           { message: 'NO FURTHER ACTION', emote: Emote.NO_FURTHER_ACTION },
           { message: 'PENALTY', emote: Emote.BLACK },
-          { message: 'TRACK LIMITS', emote: Emote.OFF_TRACK }
+          { message: 'TRACK LIMITS', emote: Emote.OFF_TRACK },
+          { message: 'PENALTY SERVED', emote: Emote.NO_FURTHER_ACTION }
         ]
 
         for (const testCase of cases) {
@@ -172,6 +173,15 @@ describe('MessageMapper', () => {
           const embed: EmbedBuilder = mapper.mapRaceControlMessage(message)
 
           assert.equal(embed.data.color, FlagColour.YELLOW)
+        })
+
+        it('should use green colour when message contains PENALTY SERVED', () => {
+          message = generateEnrichedRaceControlMessage(undefined, 'PENALTY SERVED')
+          message.flag = undefined
+
+          const embed: EmbedBuilder = mapper.mapRaceControlMessage(message)
+
+          assert.equal(embed.data.color, FlagColour.GREEN)
         })
 
         it('should use black colour when message contains PENALTY', () => {
