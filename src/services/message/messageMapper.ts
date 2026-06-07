@@ -90,6 +90,10 @@ export class MessageMapper {
       return FlagColour.YELLOW
     }
 
+    if (message.message.includes('NO FURTHER ACTION')) {
+      return FlagColour.GREEN
+    }
+
     if (message.message.includes('PENALTY SERVED')) {
       return FlagColour.GREEN
     }
