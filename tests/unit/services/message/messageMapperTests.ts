@@ -175,6 +175,15 @@ describe('MessageMapper', () => {
           assert.equal(embed.data.color, FlagColour.YELLOW)
         })
 
+        it('should use green colour when message contains NO FURTHER ACTION', () => {
+          message = generateEnrichedRaceControlMessage(undefined, 'NO FURTHER ACTION')
+          message.flag = undefined
+
+          const embed: EmbedBuilder = mapper.mapRaceControlMessage(message)
+
+          assert.equal(embed.data.color, FlagColour.GREEN)
+        })
+
         it('should use green colour when message contains PENALTY SERVED', () => {
           message = generateEnrichedRaceControlMessage(undefined, 'PENALTY SERVED')
           message.flag = undefined
