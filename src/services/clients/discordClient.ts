@@ -1,6 +1,6 @@
 import * as path from 'path'
 import * as fs from 'fs'
-import { BaseInteraction, Channel, Client, Collection, EmbedBuilder, Events, GatewayIntentBits, MessageFlags, REST, Routes } from 'discord.js'
+import { BaseInteraction, Channel, Client, Collection, EmbedBuilder, Events, MessageFlags, REST, Routes } from 'discord.js'
 import { inject, injectable } from 'inversify'
 import { TYPES } from '../../types'
 import { Logger } from 'pino'
@@ -16,11 +16,7 @@ export class DiscordClient {
     @inject(TYPES.Logger) private logger: Logger
   ) {
     this.client = new Client({
-      intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent
-      ]
+      intents: []
     })
   }
 
