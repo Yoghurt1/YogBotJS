@@ -7,7 +7,7 @@ import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
 import { getLogger } from '../../../fixtures/loggerFixtures'
 import { RaceControlMessage } from '../../../../src/interfaces/openf1/raceControl'
 import { generateRaceControlMessage } from '../../../fixtures/messageFixtures'
-import { Flag, Topic } from '../../../../src/enums'
+import { Flag, Scope, Topic } from '../../../../src/enums'
 import { MeetingMessage } from '../../../../src/interfaces/openf1/meeting'
 import { generateBaseMessage, generateMeeting } from '../../../fixtures/openf1Fixtures'
 import { assert } from 'chai'
@@ -97,6 +97,35 @@ describe('MessageHandler', () => {
         await messageHandler.handleMessage(Topic.RaceControl, Buffer.from(JSON.stringify(raceControlMessage)))
 
         verify(messageService.sendRaceControlMessage(anything())).never()
+      })
+
+      describe('Sector yellow/green flags', () => {
+        it('should ignore sector yellow flag', async () => {
+          raceControlMessage.flag = Flag.YELLOW
+          raceControlMessage.scope = Scope.SECTOR
+
+          await messageHandler.handleMessage(Topic.RaceControl, Buffer.from(JSON.stringify(raceControlMessage)))
+
+          verify(messageService.sendRaceControlMessage(anything())).never()
+        })
+
+        it('should ignore sector clear flag', async () => {
+          raceControlMessage.flag = Flag.CLEAR
+          raceControlMessage.scope = Scope.SECTOR
+
+          await messageHandler.handleMessage(Topic.RaceControl, Buffer.from(JSON.stringify(raceControlMessage)))
+
+          verify(messageService.sendRaceControlMessage(anything())).never()
+        })
+
+        it('should ignore sector double yellow flag', async () => {
+          raceControlMessage.flag = Flag.DOUBLE_YELLOW
+          raceControlMessage.scope = Scope.SECTOR
+
+          await messageHandler.handleMessage(Topic.RaceControl, Buffer.from(JSON.stringify(raceControlMessage)))
+
+          verify(messageService.sendRaceControlMessage(anything())).never()
+        })
       })
 
       it(`should parse message and send it to Discord if it's a valid race control message`, async () => {

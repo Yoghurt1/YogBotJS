@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify'
 import { TYPES } from '../../types'
 import { MessageService } from './messageService'
-import { Flag, Topic } from '../../enums'
+import { Flag, Scope, Topic } from '../../enums'
 import { Logger } from 'pino'
 import { BaseMessage } from '../../interfaces/openf1/baseMessage'
 import { isRaceControlMessage } from '../../util'
@@ -35,10 +35,20 @@ export class MessageHandler {
         return
       }
 
+      if (this.isSectorYellowOrGreen(parsedMessage)) {
+        this.logger.debug(`Ignoring sector yellow/green flag.`)
+        return
+      }
+
       await this.messageService.sendRaceControlMessage(parsedMessage)
     } else {
       this.logger.info('Ignoring message.')
     }
+  }
+
+  private isSectorYellowOrGreen(message: RaceControlMessage): boolean {
+    return [Flag.CLEAR, Flag.YELLOW, Flag.DOUBLE_YELLOW].includes(message.flag)
+      && message.scope === Scope.SECTOR
   }
 
   private isDuplicateBlueFlag(message: RaceControlMessage) {

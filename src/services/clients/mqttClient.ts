@@ -1,10 +1,9 @@
-import { connect, IClientOptions, MqttClient } from 'mqtt'
+import { connect, ErrorWithReasonCode, IClientOptions, MqttClient } from 'mqtt'
 import { MQTT_PORT, MQTT_URL, OPENF1_USERNAME } from '../../config'
 import { inject, injectable } from 'inversify'
 import { TokenResponse } from '../../interfaces/openf1/tokenResponse'
 import { Logger } from 'pino'
 import { TYPES } from '../../types'
-import { exit } from 'process'
 import { Topic } from '../../enums'
 import { sleep } from '../../util'
 import { MessageHandler } from '../message/messageHandler'
@@ -13,9 +12,12 @@ import { OpenF1Service } from '../openf1/openF1Service'
 @injectable()
 export class F1MqttClient {
   private client: MqttClient
+  private password = ''
   private MQTT_OPTIONS: IClientOptions = {
     username: OPENF1_USERNAME,
-    port: MQTT_PORT
+    port: MQTT_PORT,
+    reconnectPeriod: 1000,
+    transformWsUrl: this.transformWsUrl.bind(this)
   }
 
   constructor(
@@ -28,9 +30,12 @@ export class F1MqttClient {
     this.logger.info('Initializing MQTT client...')
     const tokenResponse: TokenResponse = await this.openF1Service.authenticate()
 
-    this.MQTT_OPTIONS.password = tokenResponse.access_token
+    const options: IClientOptions = {
+      ...this.MQTT_OPTIONS,
+      password: tokenResponse.access_token
+    }
 
-    this.client = connect(MQTT_URL, this.MQTT_OPTIONS)
+    this.client = connect(MQTT_URL, options)
 
     this.setListeners()
 
@@ -55,35 +60,36 @@ export class F1MqttClient {
     }
   }
 
+  private transformWsUrl(url: string, options: IClientOptions, client: MqttClient): string {
+    client.options.password = this.password
+
+    return url
+  }
+
   private async refreshClient(delay = 1) {
-    this.logger.info('Refreshing MQTT client...')
+    this.logger.info('Refreshing MQTT client token...')
     let tokenResponse: TokenResponse
 
     try {
       tokenResponse = await this.openF1Service.authenticate()
+
+      if (!tokenResponse.access_token) {
+        this.logger.error('No access token in response. Cannot refresh MQTT client.')
+        throw new Error('No access token in response')
+      }
+
+      this.password = tokenResponse.access_token
     } catch (error) {
-      this.logger.error(error, 'Failed to authenticate.')
+      this.logger.error(error, 'Failed to get new token.')
 
       delay = delay ** 2
       this.logger.error(`Retrying after ${delay}s...`)
 
       await sleep(delay * 1000)
       await this.refreshClient(delay)
-
-      this.logger.fatal('Max retries reached. Exiting.')
-      exit(1)
     }
 
     this.logger.info('Authenticated successfully.')
-
-    this.MQTT_OPTIONS.password = tokenResponse.access_token
-    try {
-      this.logger.info('Reconnecting to MQTT broker...')
-      this.client.reconnect(this.MQTT_OPTIONS)
-    } catch (error) {
-      this.logger.fatal(error, 'Failed to reconnect to MQTT broker.')
-      throw error
-    }
   }
 
   private setListeners(): void {
@@ -95,8 +101,9 @@ export class F1MqttClient {
       await this.messageHandler.handleMessage(topic, payload)
     })
 
-    this.client.on('error', (error: Error) => {
-      this.logger.error(error, 'MQTT client error.')
+    this.client.on('error', (error: Error | ErrorWithReasonCode) => {
+      this.logger.error(`MQTT client error - ${error.message}`)
+      this.logger.debug(error)
     })
   }
 }
